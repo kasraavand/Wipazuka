@@ -41,7 +41,7 @@ class Persian:
 
     def build_wordnet(self):
         data = self.parser()
-        with open("persian.json", 'w') as f:
+        with open("Persian/persian.json", 'w') as f:
             json.dump(data, f, indent=4)
 
 
