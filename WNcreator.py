@@ -7,7 +7,7 @@ class Persian:
     def __init__(self, file_name):
         self.file_name = file_name
         self.data = self.load_data()
-        self.regex = re.compile(r'\s*(\d+)\s(\w+)\s([^\[]*)\s*(:?\[(\d+)\s([\w\s]+)\])?\s*', flags=re.U)
+        self.regex = re.compile(r'\s*(\d+)\s(\w+)\s([^\[]*)\s*(:?\[\s*(\d+)\s*([\w\s]+)\])?\s*', flags=re.U)
 
     def load_data(self):
         with open(self.file_name, encoding='utf8') as f:
@@ -17,11 +17,8 @@ class Persian:
         for line in self.data:
             match = self.regex.match(line)
             try:
-                d1, m1, desc, d2, m2, _ = match.groups()
-            except ValueError:
-                d1, m1, desc = match.groups()
-                yield d1, m1, desc, None
-            except AttributeError:
+                d1, m1, desc, _, d2, m2 = match.groups()
+            except (ValueError, AttributeError):
                 pass
             else:
                 yield d1, m1, desc, (d2, m2)
@@ -33,7 +30,7 @@ class Persian:
             dictionary = {}
             dictionary['persian_date'] = d1, m1
             if d2:
-                if m2.capitalize() in eng_months:
+                if m2.capitalize().strip() in eng_months:
                     dictionary['english_date'] = d2, m2.capitalize()
                 else:
                     dictionary['arabic_date'] = (d2, m2)
